@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Click</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Arial', sans-serif;
+      font-size: 8vw; /* Responsive font size */
+      text-align: center;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body.clicked {
+      color: #00ff88;
+      transition: color 0.3s ease;
+    }
+  </style>
+</head>
+<body onclick="handleClick()">
+  Click
+
+  <script>
+    function handleClick() {
+      document.body.textContent = 'Thank you';
+      document.body.classList.add('clicked');
+    }
+  </script>
+</body>
+</html>
