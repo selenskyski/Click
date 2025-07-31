@@ -25,6 +25,16 @@
       border-radius: 6px;
     }
 
+    .currency {
+      position: absolute;
+      top: 10px;
+      left: 150px;
+      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
     .menu-button {
       position: absolute;
       top: 10px;
@@ -74,11 +84,23 @@
     .thank-you {
       color: #00ff88;
     }
+
+    .event-log {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.05);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
 
   <div class="counter">Clicks: <span id="clickCount">0</span></div>
+  <div class="currency">Currency: $<span id="currencyCount">0</span></div>
   <button class="menu-button" onclick="toggleMenu()">☰</button>
   <div class="menu" id="menu">
     <button onclick="resetClicks()">Reset Counter</button>
@@ -86,22 +108,28 @@
     <button onclick="buyUpgrade()">Buy Upgrade</button>
   </div>
   <div class="click-box" id="clickBox">Click</div>
+  <div class="event-log" id="eventLog">Waiting for events...</div>
 
   <script>
     let count = parseInt(localStorage.getItem("clickCount")) || 0;
+    let currency = parseInt(localStorage.getItem("currency")) || 0;
     let isThankYou = false;
     let clickPower = parseInt(localStorage.getItem("clickPower")) || 1;
 
     const counterEl = document.getElementById("clickCount");
+    const currencyEl = document.getElementById("currencyCount");
     const clickBox = document.getElementById("clickBox");
     const menu = document.getElementById("menu");
+    const eventLog = document.getElementById("eventLog");
 
     counterEl.textContent = count;
+    currencyEl.textContent = currency;
 
     function handleClick() {
       count += clickPower;
-      counterEl.textContent = count;
-      localStorage.setItem("clickCount", count);
+      currency += Math.floor(clickPower * 0.5);
+      updateDisplay();
+      saveState();
 
       isThankYou = !isThankYou;
       clickBox.textContent = isThankYou ? "Thank you" : "Click";
@@ -114,23 +142,80 @@
 
     function resetClicks() {
       count = 0;
-      localStorage.setItem("clickCount", count);
-      counterEl.textContent = count;
+      currency = 0;
+      clickPower = 1;
+      saveState();
+      updateDisplay();
     }
 
     function saveToDatabase() {
-      alert("Pretending to save to the cloud... (not really though 😎)");
+      alert("Pretending to save to the cloud... (still fake 😎)");
     }
 
     function buyUpgrade() {
-      clickPower += 1;
-      localStorage.setItem("clickPower", clickPower);
-      alert(`Upgrade bought! Clicks now worth ${clickPower} each.`);
+      const upgradeCost = (clickPower + 1) * 10;
+      if (count >= upgradeCost) {
+        count -= upgradeCost;
+        clickPower += 1;
+        saveState();
+        updateDisplay();
+        alert(`Upgrade bought! Clicks now worth ${clickPower} each.`);
+      } else {
+        alert(`Not enough clicks! You need ${upgradeCost} clicks.`);
+      }
     }
 
-    // Event listeners
-    clickBox.addEventListener("click", handleClick);
+    function updateDisplay() {
+      counterEl.textContent = count;
+      currencyEl.textContent = currency;
+    }
 
+    function saveState() {
+      localStorage.setItem("clickCount", count);
+      localStorage.setItem("clickPower", clickPower);
+      localStorage.setItem("currency", currency);
+    }
+
+    function triggerRandomEvent() {
+      const events = [
+        {
+          name: "Tax Takers",
+          effect: () => {
+            const stolen = Math.floor(count * 0.25);
+            count = Math.max(0, count - stolen);
+            eventLog.textContent = `💸 Tax Takers stole ${stolen} clicks!`;
+          }
+        },
+        {
+          name: "Bonus Round!",
+          effect: () => {
+            const bonus = Math.floor(Math.random() * 15 + 10);
+            count += bonus;
+            currency += bonus;
+            eventLog.textContent = `🎉 Bonus! You got ${bonus} extra clicks and cash!`;
+          }
+        },
+        {
+          name: "System Glitch",
+          effect: () => {
+            const lost = Math.floor(clickPower * 2);
+            clickPower = Math.max(1, clickPower - 1);
+            eventLog.textContent = `⚠️ Glitch! Click power reduced temporarily.`;
+          }
+        }
+      ];
+
+      const chosen = events[Math.floor(Math.random() * events.length)];
+      chosen.effect();
+      updateDisplay();
+      saveState();
+    }
+
+    // Event timer
+    setInterval(triggerRandomEvent, 70000); // every 70 seconds
+
+    // Listeners
+    clickBox.addEventListener("click", handleClick);
     document.addEventListener("keydown", (e) => {
       if (e.code === "Space" || e.code === "Enter") {
         handleClick();
