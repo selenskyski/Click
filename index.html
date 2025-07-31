@@ -95,6 +95,46 @@
       border-radius: 6px;
       font-size: 0.9rem;
     }
+
+    .shop-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10;
+    }
+
+    .shop-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .shop-content button {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .shop-content button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -109,6 +149,15 @@
   </div>
   <div class="click-box" id="clickBox">Click</div>
   <div class="event-log" id="eventLog">Waiting for events...</div>
+  <div class="shop-overlay" id="shopOverlay">
+    <div class="shop-content" id="shopContent">
+      <h3>Market</h3>
+      <button onclick="buyUpgradeFromShop(0)">Click Boost - $50</button>
+      <button onclick="buyUpgradeFromShop(1)">Event Shield - $100</button>
+      <button onclick="buyUpgradeFromShop(2)">Auto-Clicker - $200</button>
+      <button onclick="closeShop()">Close</button>
+    </div>
+  </div>
 
   <script>
     let count = parseInt(localStorage.getItem("clickCount")) || 0;
@@ -121,19 +170,28 @@
     const clickBox = document.getElementById("clickBox");
     const menu = document.getElementById("menu");
     const eventLog = document.getElementById("eventLog");
+    const shopOverlay = document.getElementById("shopOverlay");
+    const shopContent = document.getElementById("shopContent");
 
     counterEl.textContent = count;
     currencyEl.textContent = currency;
 
     function handleClick() {
-      count += clickPower;
-      currency += Math.floor(clickPower * 0.5);
-      updateDisplay();
-      saveState();
+      if (!isThankYou) {
+        count += clickPower;
+        currency += Math.floor(clickPower * 0.5);
+        updateDisplay();
+        saveState();
 
-      isThankYou = !isThankYou;
-      clickBox.textContent = isThankYou ? "Thank you" : "Click";
-      clickBox.classList.toggle("thank-you", isThankYou);
+        isThankYou = true;
+        clickBox.textContent = "Thank you";
+        clickBox.classList.add("thank-you");
+        setTimeout(() => {
+          isThankYou = false;
+          clickBox.textContent = "Click";
+          clickBox.classList.remove("thank-you");
+        }, 1000); // Reverts after 1 second
+      }
     }
 
     function toggleMenu() {
@@ -219,7 +277,7 @@
     // Event timer
     setInterval(triggerRandomEvent, 70000); // every 70 seconds
 
-    // Add Market to menu
+    // Update menu to include Market
     menu.innerHTML = `
       <button onclick="resetClicks()">Reset Counter</button>
       <button onclick="saveToDatabase()">Save to Database</button>
@@ -228,32 +286,41 @@
     `;
 
     function openMarket() {
+      shopOverlay.style.display = "block";
+      updateShopButtons();
+    }
+
+    function closeShop() {
+      shopOverlay.style.display = "none";
+    }
+
+    function buyUpgradeFromShop(index) {
       const upgrades = [
         { name: "Click Boost", cost: 50, effect: () => clickPower += 1 },
-        { name: "Event Shield", cost: 100, effect: () => console.log("Shield activated!") }, // Placeholder effect
-        { name: "Auto-Clicker", cost: 200, effect: () => startAutoClick() } // Placeholder function
+        { name: "Event Shield", cost: 100, effect: () => console.log("Shield activated!") },
+        { name: "Auto-Clicker", cost: 200, effect: () => startAutoClick() }
       ];
-
-      let message = "Market:\n";
-      upgrades.forEach((upgrade, index) => {
-        message += `${index + 1}. ${upgrade.name} - $${upgrade.cost}\n`;
-      });
-      message += "Enter upgrade number (1-3) or 0 to exit.";
-      let choice = prompt(message);
-
-      choice = parseInt(choice);
-      if (choice >= 1 && choice <= upgrades.length) {
-        const upgrade = upgrades[choice - 1];
-        if (currency >= upgrade.cost) {
-          currency -= upgrade.cost;
-          upgrade.effect();
-          updateDisplay();
-          saveState();
-          alert(`${upgrade.name} purchased!`);
-        } else {
-          alert("Not enough currency!");
-        }
+      const upgrade = upgrades[index];
+      if (currency >= upgrade.cost) {
+        currency -= upgrade.cost;
+        upgrade.effect();
+        updateDisplay();
+        saveState();
+        alert(`${upgrade.name} purchased!`);
+      } else {
+        alert("Not enough currency!");
       }
+      updateShopButtons();
+    }
+
+    function updateShopButtons() {
+      const buttons = shopContent.querySelectorAll("button:not(:last-child)");
+      const upgrades = [
+        { cost: 50 }, { cost: 100 }, { cost: 200 }
+      ];
+      buttons.forEach((button, index) => {
+        button.disabled = currency < upgrades[index].cost;
+      });
     }
 
     // Placeholder for Auto-Clicker
@@ -276,4 +343,4 @@
   </script>
 
 </body>
-</html>
+      </html>
