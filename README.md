@@ -2,7 +2,7 @@
 
 A fun web clicker game made with HTML, CSS, and JavaScript this game is still in progress so expect bugs 🐛 
 
-![Logo]()
+![Logo](https://github.com/user-attachments/assets/f36819e6-04fd-4d34-8a5d-5f8b89312c22)
 
 ## Features
 
