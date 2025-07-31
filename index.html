@@ -138,7 +138,6 @@
   </style>
 </head>
 <body>
-
   <div class="counter">Clicks: <span id="clickCount">0</span></div>
   <div class="currency">Currency: $<span id="currencyCount">0</span></div>
   <button class="menu-button" onclick="toggleMenu()">☰</button>
@@ -146,6 +145,8 @@
     <button onclick="resetClicks()">Reset Counter</button>
     <button onclick="saveToDatabase()">Save to Database</button>
     <button onclick="buyUpgrade()">Buy Upgrade</button>
+    <button onclick="openMarket()">Market</button>
+    <button onclick="prestigeReset()">Prestige</button>
   </div>
   <div class="click-box" id="clickBox">Click</div>
   <div class="event-log" id="eventLog">Waiting for events...</div>
@@ -155,15 +156,29 @@
       <button onclick="buyUpgradeFromShop(0)">Click Boost - $50</button>
       <button onclick="buyUpgradeFromShop(1)">Event Shield - $100</button>
       <button onclick="buyUpgradeFromShop(2)">Auto-Clicker - $200</button>
+      <button onclick="upgradeAutoClicker()">Upgrade Auto-Clicker - $300</button>
+      <h3>Themes</h3>
+      <button onclick="buyTheme('neon', 500)">Neon Theme - $500</button>
+      <button onclick="buyTheme('retro', 500)">Retro Theme - $500</button>
+      <h3>Prestige Shop</h3>
+      <button onclick="spendPrestigePoints(10, () => prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button>
       <button onclick="closeShop()">Close</button>
     </div>
   </div>
+  <audio id="backgroundMusic" src="" autoplay loop style="display: none;"></audio>
 
   <script>
     let count = parseInt(localStorage.getItem("clickCount")) || 0;
     let currency = parseInt(localStorage.getItem("currency")) || 0;
     let isThankYou = false;
     let clickPower = parseInt(localStorage.getItem("clickPower")) || 1;
+    let autoClickers = parseInt(localStorage.getItem("autoClickers")) || 0;
+    let autoClickerLevel = parseInt(localStorage.getItem("autoClickerLevel")) || 1;
+    let eventShieldActive = false;
+    let shieldTimeout = null;
+    let prestigePoints = parseInt(localStorage.getItem("prestigePoints")) || 0;
+    let prestigeMultiplier = parseFloat(localStorage.getItem("prestigeMultiplier")) || 1;
+    let currentTheme = localStorage.getItem("theme") || "default";
 
     const counterEl = document.getElementById("clickCount");
     const currencyEl = document.getElementById("currencyCount");
@@ -172,16 +187,18 @@
     const eventLog = document.getElementById("eventLog");
     const shopOverlay = document.getElementById("shopOverlay");
     const shopContent = document.getElementById("shopContent");
+    const backgroundMusic = document.getElementById("backgroundMusic");
 
     counterEl.textContent = count;
     currencyEl.textContent = currency;
 
     function handleClick() {
       if (!isThankYou) {
-        count += clickPower;
-        currency += Math.floor(clickPower * 0.5);
+        count += clickPower * prestigeMultiplier;
+        currency += Math.floor(clickPower * 0.5 * prestigeMultiplier);
         updateDisplay();
         saveState();
+        checkAchievements();
 
         isThankYou = true;
         clickBox.textContent = "Thank you";
@@ -190,7 +207,7 @@
           isThankYou = false;
           clickBox.textContent = "Click";
           clickBox.classList.remove("thank-you");
-        }, 1000); // Reverts after 1 second
+        }, 1000);
       }
     }
 
@@ -202,6 +219,8 @@
       count = 0;
       currency = 0;
       clickPower = 1;
+      autoClickers = 0;
+      autoClickerLevel = 1;
       saveState();
       updateDisplay();
     }
@@ -232,6 +251,11 @@
       localStorage.setItem("clickCount", count);
       localStorage.setItem("clickPower", clickPower);
       localStorage.setItem("currency", currency);
+      localStorage.setItem("autoClickers", autoClickers);
+      localStorage.setItem("autoClickerLevel", autoClickerLevel);
+      localStorage.setItem("prestigePoints", prestigePoints);
+      localStorage.setItem("prestigeMultiplier", prestigeMultiplier);
+      localStorage.setItem("theme", currentTheme);
     }
 
     function triggerRandomEvent() {
@@ -239,6 +263,10 @@
         {
           name: "Tax Takers",
           effect: () => {
+            if (eventShieldActive) {
+              eventLog.textContent = "Tax Takers blocked by Event Shield!";
+              return;
+            }
             const stolen = Math.floor(count * 0.25);
             count = Math.max(0, count - stolen);
             eventLog.textContent = `💸 Tax Takers stole ${stolen} clicks!`;
@@ -256,6 +284,10 @@
         {
           name: "System Glitch",
           effect: () => {
+            if (eventShieldActive) {
+              eventLog.textContent = "System Glitch blocked by Event Shield!";
+              return;
+            }
             const lost = Math.floor(clickPower * 2);
             clickPower = Math.max(1, clickPower - 1);
             eventLog.textContent = `⚠️ Glitch! Click power reduced temporarily.`;
@@ -267,27 +299,25 @@
       chosen.effect();
       updateDisplay();
       saveState();
-
-      // Reset event log after 5 seconds
       setTimeout(() => {
         eventLog.textContent = "Waiting for events...";
       }, 5000);
     }
 
-    // Event timer
-    setInterval(triggerRandomEvent, 70000); // every 70 seconds
+    setInterval(triggerRandomEvent, 70000);
 
-    // Update menu to include Market
     menu.innerHTML = `
       <button onclick="resetClicks()">Reset Counter</button>
       <button onclick="saveToDatabase()">Save to Database</button>
       <button onclick="buyUpgrade()">Buy Upgrade</button>
       <button onclick="openMarket()">Market</button>
+      <button onclick="prestigeReset()">Prestige</button>
     `;
 
     function openMarket() {
       shopOverlay.style.display = "block";
       updateShopButtons();
+      displayLeaderboard();
     }
 
     function closeShop() {
@@ -297,8 +327,35 @@
     function buyUpgradeFromShop(index) {
       const upgrades = [
         { name: "Click Boost", cost: 50, effect: () => clickPower += 1 },
-        { name: "Event Shield", cost: 100, effect: () => console.log("Shield activated!") },
-        { name: "Auto-Clicker", cost: 200, effect: () => startAutoClick() }
+        {
+          name: "Event Shield",
+          cost: 100,
+          effect: () => {
+            eventShieldActive = true;
+            eventLog.textContent = "Event Shield activated for 2 minutes!";
+            clearTimeout(shieldTimeout);
+            shieldTimeout = setTimeout(() => {
+              eventShieldActive = false;
+              eventLog.textContent = "Event Shield expired.";
+            }, 120000);
+          }
+        },
+        {
+          name: "Auto-Clicker",
+          cost: 200,
+          effect: () => {
+            if (autoClickers === 0) {
+              setInterval(() => {
+                count += autoClickers * autoClickerLevel;
+                currency += 0.5 * autoClickers * autoClickerLevel;
+                updateDisplay();
+                saveState();
+              }, 10000 / autoClickerLevel);
+            }
+            autoClickers += 1;
+            eventLog.textContent = `Auto-Clicker purchased! Now have ${autoClickers} Auto-Clickers.`;
+          }
+        }
       ];
       const upgrade = upgrades[index];
       if (currency >= upgrade.cost) {
@@ -316,22 +373,146 @@
     function updateShopButtons() {
       const buttons = shopContent.querySelectorAll("button:not(:last-child)");
       const upgrades = [
-        { cost: 50 }, { cost: 100 }, { cost: 200 }
+        { cost: 50 }, { cost: 100 }, { cost: 200 }, { cost: 300 * autoClickerLevel }, { cost: 500 }, { cost: 500 }, { cost: 10 }
       ];
       buttons.forEach((button, index) => {
-        button.disabled = currency < upgrades[index].cost;
+        button.disabled = currency < upgrades[index].cost || (index === 3 && autoClickers === 0);
       });
     }
 
-    // Placeholder for Auto-Clicker
-    function startAutoClick() {
-      setInterval(() => {
-        count += 1;
-        currency += 0.5;
+    function upgradeAutoClicker() {
+      const upgradeCost = 300 * autoClickerLevel;
+      if (currency >= upgradeCost) {
+        currency -= upgradeCost;
+        autoClickerLevel += 1;
         updateDisplay();
         saveState();
-      }, 10000); // Every 10 seconds
+        eventLog.textContent = `Auto-Clicker upgraded to level ${autoClickerLevel}!`;
+      } else {
+        alert(`Not enough currency! You need $${upgradeCost}.`);
+      }
+      updateShopButtons();
     }
+
+    function applyTheme(theme) {
+      const themes = {
+        default: { background: "#111", clickBoxColor: "#fff" },
+        neon: { background: "#000", clickBoxColor: "#00ff88" },
+        retro: { background: "#222", clickBoxColor: "#ff00ff" }
+      };
+      document.body.style.backgroundColor = themes[theme].background;
+      clickBox.style.color = themes[theme].clickBoxColor;
+      currentTheme = theme;
+      saveState();
+    }
+
+    function buyTheme(theme, cost) {
+      if (currency >= cost) {
+        currency -= cost;
+        applyTheme(theme);
+        updateDisplay();
+        saveState();
+        alert(`${theme} theme applied!`);
+      } else {
+        alert(`Not enough currency! You need $${cost}.`);
+      }
+    }
+
+    const achievements = [
+      { id: 1, name: "Click Novice", condition: () => count >= 100, reward: () => currency += 20, unlocked: false },
+      { id: 2, name: "Upgrade Enthusiast", condition: () => clickPower >= 5, reward: () => currency += 50, unlocked: false }
+    ];
+
+    function checkAchievements() {
+      achievements.forEach(ach => {
+        if (!ach.unlocked && ach.condition()) {
+          ach.unlocked = true;
+          ach.reward();
+          eventLog.textContent = `Achievement Unlocked: ${ach.name}!`;
+          updateDisplay();
+          saveState();
+        }
+      });
+    }
+
+    function prestigeReset() {
+      if (count < 1000) {
+        alert("Need at least 1000 clicks to prestige!");
+        return;
+      }
+      const earnedPoints = Math.floor(count / 1000);
+      prestigePoints += earnedPoints;
+      count = 0;
+      currency = 0;
+      clickPower = 1;
+      autoClickers = 0;
+      autoClickerLevel = 1;
+      updateDisplay();
+      saveState();
+      eventLog.textContent = `Prestiged! Gained ${earnedPoints} Prestige Points.`;
+    }
+
+    function spendPrestigePoints(amount, effect) {
+      if (prestigePoints >= amount) {
+        prestigePoints -= amount;
+        effect();
+        updateDisplay();
+        saveState();
+      } else {
+        alert(`Not enough Prestige Points! You need ${amount}.`);
+      }
+    }
+
+    const leaderboard = [
+      { name: "Player1", score: 1000 },
+      { name: "Player2", score: 800 },
+      { name: "You", score: () => count }
+    ];
+
+    function displayLeaderboard() {
+      leaderboard[2].score = () => count;
+      const sorted = leaderboard.sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score));
+      shopContent.innerHTML += `
+        <h3>Leaderboard</h3>
+        ${sorted.map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`).join("")}
+      `;
+    }
+
+    // Background Music
+    const musicTracks = [
+      "https://raw.githubusercontent.com/yourusername/yourrepo/main/171220-jazz-style-piano-20557.mp3",
+      "https://raw.githubusercontent.com/yourusername/yourrepo/main/Jazz%20Piano%20Bar%20-%20Doug%20Maxwell%20Media%20Right%20Prod.mp3",
+      "https://raw.githubusercontent.com/yourusername/yourrepo/main/jazz-lounge-elevator-music-323239.mp3",
+      "https://raw.githubusercontent.com/yourusername/yourrepo/main/lounge-jazz-elevator-music-324902.mp3",
+      "https://raw.githubusercontent.com/yourusername/yourrepo/main/piano-jazz-321405.mp3"
+    ];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function playBackgroundMusic() {
+      shuffleArray(musicTracks);
+      backgroundMusic.src = musicTracks[0];
+      backgroundMusic.volume = 0.5; // Set background volume
+      backgroundMusic.play().catch(error => {
+        console.log("Error playing background music:", error);
+      });
+    }
+
+    setInterval(() => {
+      shuffleArray(musicTracks);
+      backgroundMusic.src = musicTracks[0];
+      backgroundMusic.play().catch(error => {
+        console.log("Error playing background music:", error);
+      });
+    }, 300000); // Switch every 5 minutes
+
+    playBackgroundMusic();
 
     // Listeners
     clickBox.addEventListener("click", handleClick);
@@ -340,7 +521,15 @@
         handleClick();
       }
     });
-  </script>
 
+    // Apply theme on load
+    applyTheme(currentTheme);
+
+    // Load achievements
+    const savedAchievements = JSON.parse(localStorage.getItem("achievements")) || [];
+    achievements.forEach((ach, i) => {
+      if (savedAchievements[i]) ach.unlocked = savedAchievements[i].unlocked;
+    });
+  </script>
 </body>
-      </html>
+</html>
