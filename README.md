@@ -15,3 +15,11 @@ A fun web clicker game made with HTML, CSS, and JavaScript this game is still in
   
 
 - try game [here](https://selenskyski.github.io/Click/)
+
+# updates
+
+- added more things in market prestige and achievements were released
+- background music will be added soon
+- added themes
+
+from now on there will be no more updates sorry 
