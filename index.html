@@ -1,535 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Click</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: #111;
-      color: #fff;
-      font-family: 'Arial', sans-serif;
-      overflow: hidden;
-    }
+Click html, body { margin: 0; padding: 0; height: 100%; background-color: #111; color: #fff; font-family: 'Arial', sans-serif; overflow: hidden; }
+.counter {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
 
-    .counter {
-      position: absolute;
-      top: 10px;
-      left: 15px;
-      font-size: 1.2rem;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 6px 12px;
-      border-radius: 6px;
-    }
+.currency {
+  position: absolute;
+  top: 10px;
+  left: 150px;
+  font-size: 1.2rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
 
-    .currency {
-      position: absolute;
-      top: 10px;
-      left: 150px;
-      font-size: 1.2rem;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 6px 12px;
-      border-radius: 6px;
-    }
+.menu-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: #333;
+  padding: 6px 12px;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-    .menu-button {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: #333;
-      padding: 6px 12px;
-      border: none;
-      color: #fff;
-      font-size: 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.menu {
+  position: absolute;
+  top: 50px;
+  right: 15px;
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
 
-    .menu {
-      position: absolute;
-      top: 50px;
-      right: 15px;
-      background: #222;
-      padding: 10px;
-      border-radius: 8px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
+.menu button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-    .menu button {
-      background: #444;
-      color: white;
-      border: none;
-      padding: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+.click-box {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 8vw;
+  cursor: pointer;
+  text-align: center;
+  user-select: none;
+  transition: color 0.2s ease;
+}
 
-    .click-box {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 8vw;
-      cursor: pointer;
-      text-align: center;
-      user-select: none;
-      transition: color 0.2s ease;
-    }
+.thank-you {
+  color: #00e500;
+}
 
-    .thank-you {
-      color: #00e500;
-    }
+.event-log {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.05);
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
 
-    .event-log {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.05);
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-    }
+.shop-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 10;
+}
 
-    .shop-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10;
-    }
+.shop-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+}
 
-    .shop-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 300px;
-      text-align: center;
-    }
+.shop-content button {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
 
-    .shop-content button {
-      background: #444;
-      color: white;
-      border: none;
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-    }
+.shop-content button:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+�
+Clicks: 0
+Currency: $0
+☰ 
+Reset Counter Save to Database Buy Upgrade Market Prestige Toggle Music 
+Click
+Waiting for events...
 
-    .shop-content button:disabled {
-      background: #666;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
-<body>
-  <div class="counter">Clicks: <span id="clickCount">0</span></div>
-  <div class="currency">Currency: $<span id="currencyCount">0</span></div>
-  <button class="menu-button" onclick="toggleMenu()">☰</button>
-  <div class="menu" id="menu">
-    <button onclick="resetClicks()">Reset Counter</button>
-    <button onclick="saveToDatabase()">Save to Database</button>
-    <button onclick="buyUpgrade()">Buy Upgrade</button>
-    <button onclick="openMarket()">Market</button>
-    <button onclick="prestigeReset()">Prestige</button>
-  </div>
-  <div class="click-box" id="clickBox">Click</div>
-  <div class="event-log" id="eventLog">Waiting for events...</div>
-  <div class="shop-overlay" id="shopOverlay">
-    <div class="shop-content" id="shopContent">
-      <h3>Market</h3>
-      <button onclick="buyUpgradeFromShop(0)">Click Boost - $50</button>
-      <button onclick="buyUpgradeFromShop(1)">Event Shield - $100</button>
-      <button onclick="buyUpgradeFromShop(2)">Auto-Clicker - $200</button>
-      <button onclick="upgradeAutoClicker()">Upgrade Auto-Clicker - $300</button>
-      <h3>Themes</h3>
-      <button onclick="buyTheme('neon', 500)">Neon Theme - $500</button>
-      <button onclick="buyTheme('retro', 500)">Retro Theme - $500</button>
-      <h3>Prestige Shop</h3>
-      <button onclick="spendPrestigePoints(10, () => prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button>
-      <button onclick="closeShop()">Close</button>
-    </div>
-  </div>
-  <audio id="backgroundMusic" src="" autoplay loop style="display: none;"></audio>
-
-  <script>
-    let count = parseInt(localStorage.getItem("clickCount")) || 0;
-    let currency = parseInt(localStorage.getItem("currency")) || 0;
-    let isThankYou = false;
-    let clickPower = parseInt(localStorage.getItem("clickPower")) || 1;
-    let autoClickers = parseInt(localStorage.getItem("autoClickers")) || 0;
-    let autoClickerLevel = parseInt(localStorage.getItem("autoClickerLevel")) || 1;
-    let eventShieldActive = false;
-    let shieldTimeout = null;
-    let prestigePoints = parseInt(localStorage.getItem("prestigePoints")) || 0;
-    let prestigeMultiplier = parseFloat(localStorage.getItem("prestigeMultiplier")) || 1;
-    let currentTheme = localStorage.getItem("theme") || "default";
-
-    const counterEl = document.getElementById("clickCount");
-    const currencyEl = document.getElementById("currencyCount");
-    const clickBox = document.getElementById("clickBox");
-    const menu = document.getElementById("menu");
-    const eventLog = document.getElementById("eventLog");
-    const shopOverlay = document.getElementById("shopOverlay");
-    const shopContent = document.getElementById("shopContent");
-    const backgroundMusic = document.getElementById("backgroundMusic");
-
-    counterEl.textContent = count;
-    currencyEl.textContent = currency;
-
-    function handleClick() {
-      if (!isThankYou) {
-        count += clickPower * prestigeMultiplier;
-        currency += Math.floor(clickPower * 0.5 * prestigeMultiplier);
-        updateDisplay();
-        saveState();
-        checkAchievements();
-
-        isThankYou = true;
-        clickBox.textContent = "Thank you";
-        clickBox.classList.add("thank-you");
-        setTimeout(() => {
-          isThankYou = false;
-          clickBox.textContent = "Click";
-          clickBox.classList.remove("thank-you");
-        }, 1000);
-      }
-    }
-
-    function toggleMenu() {
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    }
-
-    function resetClicks() {
-      count = 0;
-      currency = 0;
-      clickPower = 1;
-      autoClickers = 0;
-      autoClickerLevel = 1;
-      saveState();
-      updateDisplay();
-    }
-
-    function saveToDatabase() {
-      alert("Pretending to save to the cloud... (still fake 😎)");
-    }
-
-    function buyUpgrade() {
-      const upgradeCost = (clickPower + 1) * 10;
-      if (currency >= upgradeCost) {
-        currency -= upgradeCost;
-        clickPower += 1;
-        saveState();
-        updateDisplay();
-        alert(`Upgrade bought! Clicks now worth ${clickPower} each.`);
-      } else {
-        alert(`Not enough currency! You need $${upgradeCost}.`);
-      }
-    }
-
-    function updateDisplay() {
-      counterEl.textContent = count;
-      currencyEl.textContent = currency;
-    }
-
-    function saveState() {
-      localStorage.setItem("clickCount", count);
-      localStorage.setItem("clickPower", clickPower);
-      localStorage.setItem("currency", currency);
-      localStorage.setItem("autoClickers", autoClickers);
-      localStorage.setItem("autoClickerLevel", autoClickerLevel);
-      localStorage.setItem("prestigePoints", prestigePoints);
-      localStorage.setItem("prestigeMultiplier", prestigeMultiplier);
-      localStorage.setItem("theme", currentTheme);
-    }
-
-    function triggerRandomEvent() {
-      const events = [
-        {
-          name: "Tax Takers",
-          effect: () => {
-            if (eventShieldActive) {
-              eventLog.textContent = "Tax Takers blocked by Event Shield!";
-              return;
-            }
-            const stolen = Math.floor(count * 0.25);
-            count = Math.max(0, count - stolen);
-            eventLog.textContent = `💸 Tax Takers stole ${stolen} clicks!`;
-          }
-        },
-        {
-          name: "Bonus Round!",
-          effect: () => {
-            const bonus = Math.floor(Math.random() * 15 + 10);
-            count += bonus;
-            currency += bonus;
-            eventLog.textContent = `🎉 Bonus! You got ${bonus} extra clicks and cash!`;
-          }
-        },
-        {
-          name: "System Glitch",
-          effect: () => {
-            if (eventShieldActive) {
-              eventLog.textContent = "System Glitch blocked by Event Shield!";
-              return;
-            }
-            const lost = Math.floor(clickPower * 2);
-            clickPower = Math.max(1, clickPower - 1);
-            eventLog.textContent = `⚠️ Glitch! Click power reduced temporarily.`;
-          }
-        }
-      ];
-
-      const chosen = events[Math.floor(Math.random() * events.length)];
-      chosen.effect();
-      updateDisplay();
-      saveState();
-      setTimeout(() => {
-        eventLog.textContent = "Waiting for events...";
-      }, 5000);
-    }
-
-    setInterval(triggerRandomEvent, 70000);
-
-    menu.innerHTML = `
-      <button onclick="resetClicks()">Reset Counter</button>
-      <button onclick="saveToDatabase()">Save to Database</button>
-      <button onclick="buyUpgrade()">Buy Upgrade</button>
-      <button onclick="openMarket()">Market</button>
-      <button onclick="prestigeReset()">Prestige</button>
-    `;
-
-    function openMarket() {
-      shopOverlay.style.display = "block";
-      updateShopButtons();
-      displayLeaderboard();
-    }
-
-    function closeShop() {
-      shopOverlay.style.display = "none";
-    }
-
-    function buyUpgradeFromShop(index) {
-      const upgrades = [
-        { name: "Click Boost", cost: 50, effect: () => clickPower += 1 },
-        {
-          name: "Event Shield",
-          cost: 100,
-          effect: () => {
-            eventShieldActive = true;
-            eventLog.textContent = "Event Shield activated for 2 minutes!";
-            clearTimeout(shieldTimeout);
-            shieldTimeout = setTimeout(() => {
-              eventShieldActive = false;
-              eventLog.textContent = "Event Shield expired.";
-            }, 120000);
-          }
-        },
-        {
-          name: "Auto-Clicker",
-          cost: 200,
-          effect: () => {
-            if (autoClickers === 0) {
-              setInterval(() => {
-                count += autoClickers * autoClickerLevel;
-                currency += 0.5 * autoClickers * autoClickerLevel;
-                updateDisplay();
-                saveState();
-              }, 10000 / autoClickerLevel);
-            }
-            autoClickers += 1;
-            eventLog.textContent = `Auto-Clicker purchased! Now have ${autoClickers} Auto-Clickers.`;
-          }
-        }
-      ];
-      const upgrade = upgrades[index];
-      if (currency >= upgrade.cost) {
-        currency -= upgrade.cost;
-        upgrade.effect();
-        updateDisplay();
-        saveState();
-        alert(`${upgrade.name} purchased!`);
-      } else {
-        alert("Not enough currency!");
-      }
-      updateShopButtons();
-    }
-
-    function updateShopButtons() {
-      const buttons = shopContent.querySelectorAll("button:not(:last-child)");
-      const upgrades = [
-        { cost: 50 }, { cost: 100 }, { cost: 200 }, { cost: 300 * autoClickerLevel }, { cost: 500 }, { cost: 500 }, { cost: 10 }
-      ];
-      buttons.forEach((button, index) => {
-        button.disabled = currency < upgrades[index].cost || (index === 3 && autoClickers === 0);
-      });
-    }
-
-    function upgradeAutoClicker() {
-      const upgradeCost = 300 * autoClickerLevel;
-      if (currency >= upgradeCost) {
-        currency -= upgradeCost;
-        autoClickerLevel += 1;
-        updateDisplay();
-        saveState();
-        eventLog.textContent = `Auto-Clicker upgraded to level ${autoClickerLevel}!`;
-      } else {
-        alert(`Not enough currency! You need $${upgradeCost}.`);
-      }
-      updateShopButtons();
-    }
-
-    function applyTheme(theme) {
-      const themes = {
-        default: { background: "#111", clickBoxColor: "#fff" },
-        neon: { background: "#000", clickBoxColor: "#00ff88" },
-        retro: { background: "#222", clickBoxColor: "#ff00ff" }
-      };
-      document.body.style.backgroundColor = themes[theme].background;
-      clickBox.style.color = themes[theme].clickBoxColor;
-      currentTheme = theme;
-      saveState();
-    }
-
-    function buyTheme(theme, cost) {
-      if (currency >= cost) {
-        currency -= cost;
-        applyTheme(theme);
-        updateDisplay();
-        saveState();
-        alert(`${theme} theme applied!`);
-      } else {
-        alert(`Not enough currency! You need $${cost}.`);
-      }
-    }
-
-    const achievements = [
-      { id: 1, name: "Click Novice", condition: () => count >= 100, reward: () => currency += 20, unlocked: false },
-      { id: 2, name: "Upgrade Enthusiast", condition: () => clickPower >= 5, reward: () => currency += 50, unlocked: false }
-    ];
-
-    function checkAchievements() {
-      achievements.forEach(ach => {
-        if (!ach.unlocked && ach.condition()) {
-          ach.unlocked = true;
-          ach.reward();
-          eventLog.textContent = `Achievement Unlocked: ${ach.name}!`;
-          updateDisplay();
-          saveState();
-        }
-      });
-    }
-
-    function prestigeReset() {
-      if (count < 1000) {
-        alert("Need at least 1000 clicks to prestige!");
-        return;
-      }
-      const earnedPoints = Math.floor(count / 1000);
-      prestigePoints += earnedPoints;
-      count = 0;
-      currency = 0;
-      clickPower = 1;
-      autoClickers = 0;
-      autoClickerLevel = 1;
-      updateDisplay();
-      saveState();
-      eventLog.textContent = `Prestiged! Gained ${earnedPoints} Prestige Points.`;
-    }
-
-    function spendPrestigePoints(amount, effect) {
-      if (prestigePoints >= amount) {
-        prestigePoints -= amount;
-        effect();
-        updateDisplay();
-        saveState();
-      } else {
-        alert(`Not enough Prestige Points! You need ${amount}.`);
-      }
-    }
-
-    const leaderboard = [
-      { name: "Player1", score: 1000 },
-      { name: "Player2", score: 800 },
-      { name: "You", score: () => count }
-    ];
-
-    function displayLeaderboard() {
-      leaderboard[2].score = () => count;
-      const sorted = leaderboard.sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score));
-      shopContent.innerHTML += `
-        <h3>Leaderboard</h3>
-        ${sorted.map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`).join("")}
-      `;
-    }
-
-    // Background Music
-    const musicTracks = [
-      "https://raw.githubusercontent.com/yourusername/yourrepo/main/171220-jazz-style-piano-20557.mp3",
-      "https://raw.githubusercontent.com/yourusername/yourrepo/main/Jazz%20Piano%20Bar%20-%20Doug%20Maxwell%20Media%20Right%20Prod.mp3",
-      "https://raw.githubusercontent.com/yourusername/yourrepo/main/jazz-lounge-elevator-music-323239.mp3",
-      "https://raw.githubusercontent.com/yourusername/yourrepo/main/lounge-jazz-elevator-music-324902.mp3",
-      "https://raw.githubusercontent.com/yourusername/yourrepo/main/piano-jazz-321405.mp3"
-    ];
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function playBackgroundMusic() {
-      shuffleArray(musicTracks);
-      backgroundMusic.src = musicTracks[0];
-      backgroundMusic.volume = 0.5; // Set background volume
-      backgroundMusic.play().catch(error => {
-        console.log("Error playing background music:", error);
-      });
-    }
-
-    setInterval(() => {
-      shuffleArray(musicTracks);
-      backgroundMusic.src = musicTracks[0];
-      backgroundMusic.play().catch(error => {
-        console.log("Error playing background music:", error);
-      });
-    }, 300000); // Switch every 5 minutes
-
-    playBackgroundMusic();
-
-    // Listeners
-    clickBox.addEventListener("click", handleClick);
-    document.addEventListener("keydown", (e) => {
-      if (e.code === "Space" || e.code === "Enter") {
-        handleClick();
-      }
-    });
-
-    // Apply theme on load
-    applyTheme(currentTheme);
-
-    // Load achievements
-    const savedAchievements = JSON.parse(localStorage.getItem("achievements")) || [];
-    achievements.forEach((ach, i) => {
-      if (savedAchievements[i]) ach.unlocked = savedAchievements[i].unlocked;
-    });
-  </script>
-</body>
-</html>
+let count = parseInt(localStorage.getItem("clickCount")) || 0; let currency = parseInt(localStorage.getItem("currency")) || 0; let isThankYou = false; let clickPower = parseInt(localStorage.getItem("clickPower")) || 1; let autoClickers = parseInt(localStorage.getItem("autoClickers")) || 0; let autoClickerLevel = parseInt(localStorage.getItem("autoClickerLevel")) || 1; let eventShieldActive = false; let shieldTimeout = null; let prestigePoints = parseInt(localStorage.getItem("prestigePoints")) || 0; let prestigeMultiplier = parseFloat(localStorage.getItem("prestigeMultiplier")) || 1; let currentTheme = localStorage.getItem("theme") || "default"; let ownedThemes = JSON.parse(localStorage.getItem("ownedThemes")) || ["default"]; const counterEl = document.getElementById("clickCount"); const currencyEl = document.getElementById("currencyCount"); const clickBox = document.getElementById("clickBox"); const menu = document.getElementById("menu"); const eventLog = document.getElementById("eventLog"); const shopOverlay = document.getElementById("shopOverlay"); const shopContent = document.getElementById("shopContent"); const backgroundMusic = document.getElementById("backgroundMusic"); counterEl.textContent = count; currencyEl.textContent = currency; function handleClick() { if (!isThankYou) { count += clickPower * prestigeMultiplier; currency += Math.floor(clickPower * 0.5 * prestigeMultiplier); updateDisplay(); saveState(); checkAchievements(); isThankYou = true; clickBox.textContent = "Thank you"; clickBox.classList.add("thank-you"); setTimeout(() => { isThankYou = false; clickBox.textContent = "Click"; clickBox.classList.remove("thank-you"); }, 1000); } } function toggleMenu() { menu.style.display = menu.style.display === "flex" ? "none" : "flex"; } function resetClicks() { count = 0; currency = 0; clickPower = 1; autoClickers = 0; autoClickerLevel = 1; saveState(); updateDisplay(); } function saveToDatabase() { alert("Pretending to save to the cloud... (still fake 😎)"); } function buyUpgrade() { const upgradeCost = (clickPower + 1) * 10; if (currency >= upgradeCost) { currency -= upgradeCost; clickPower += 1; saveState(); updateDisplay(); alert(`Upgrade bought! Clicks now worth ${clickPower} each.`); } else { alert(`Not enough currency! You need $${upgradeCost}.`); } } function updateDisplay() { counterEl.textContent = count; currencyEl.textContent = currency; } function saveState() { localStorage.setItem("clickCount", count); localStorage.setItem("clickPower", clickPower); localStorage.setItem("currency", currency); localStorage.setItem("autoClickers", autoClickers); localStorage.setItem("autoClickerLevel", autoClickerLevel); localStorage.setItem("prestigePoints", prestigePoints); localStorage.setItem("prestigeMultiplier", prestigeMultiplier); localStorage.setItem("theme", currentTheme); localStorage.setItem("ownedThemes", JSON.stringify(ownedThemes)); localStorage.setItem("achievements", JSON.stringify(achievements.map(ach => ({id: ach.id, unlocked: ach.unlocked})))); } function triggerRandomEvent() { const events = [ { name: "Tax Takers", effect: () => { if (eventShieldActive) { eventLog.textContent = "Tax Takers blocked by Event Shield!"; return; } const stolen = Math.floor(count * 0.25); count = Math.max(0, count - stolen); eventLog.textContent = `💸 Tax Takers stole ${stolen} clicks!`; } }, { name: "Bonus Round!", effect: () => { const bonus = Math.floor(Math.random() * 15 + 10); count += bonus; currency += bonus; eventLog.textContent = `🎉 Bonus! You got ${bonus} extra clicks and cash!`; } }, { name: "System Glitch", effect: () => { if (eventShieldActive) { eventLog.textContent = "System Glitch blocked by Event Shield!"; return; } const lost = Math.floor(clickPower * 2); count -= lost; const oldPower = clickPower; clickPower = Math.max(1, clickPower - 1); eventLog.textContent = `⚠️ Glitch! Lost ${lost} clicks and click power reduced temporarily.`; setTimeout(() => { clickPower = oldPower; eventLog.textContent = "Glitch resolved."; updateDisplay(); saveState(); }, 60000); } } ]; const chosen = events[Math.floor(Math.random() * events.length)]; chosen.effect(); updateDisplay(); saveState(); setTimeout(() => { eventLog.textContent = "Waiting for events..."; }, 5000); } setInterval(triggerRandomEvent, 70000); function openMarket() { let shopHTML = ` <h3>Market</h3> <button onclick="buyUpgradeFromShop(0)">Click Boost - $50</button> <button onclick="buyUpgradeFromShop(1)">Event Shield - $100</button> <button onclick="buyUpgradeFromShop(2)">Auto-Clicker - $200</button> <button onclick="upgradeAutoClicker()">Upgrade Auto-Clicker - $${300 * autoClickerLevel}</button> <h3>Themes</h3> `; shopHTML += `<button onclick="applyTheme('default')">Apply Default Theme</button>`; const neonText = ownedThemes.includes('neon') ? "Apply Neon Theme" : "Neon Theme - $500"; shopHTML += `<button onclick="buyTheme('neon', 500)">${neonText}</button>`; const retroText = ownedThemes.includes('retro') ? "Apply Retro Theme" : "Retro Theme - $500"; shopHTML += `<button onclick="buyTheme('retro', 500)">${retroText}</button>`; shopHTML += ` <h3>Prestige Shop</h3> <button onclick="spendPrestigePoints(10, () => prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button> <h3>Leaderboard</h3> ${leaderboard.sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score)).map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`).join("")} <button onclick="closeShop()">Close</button> `; shopContent.innerHTML = shopHTML; updateShopButtons(); shopOverlay.style.display = "block"; } function closeShop() { shopOverlay.style.display = "none"; } function buyUpgradeFromShop(index) { const upgrades = [ { name: "Click Boost", cost: 50, effect: () => clickPower += 1 }, { name: "Event Shield", cost: 100, effect: () => { eventShieldActive = true; eventLog.textContent = "Event Shield activated for 2 minutes!"; clearTimeout(shieldTimeout); shieldTimeout = setTimeout(() => { eventShieldActive = false; eventLog.textContent = "Event Shield expired."; }, 120000); } }, { name: "Auto-Clicker", cost: 200, effect: () => { autoClickers += 1; if (autoClickers === 1) { setInterval(() => { const rate = autoClickers * autoClickerLevel * prestigeMultiplier; count += rate; currency += Math.floor(0.5 * rate); updateDisplay(); saveState(); }, 1000); } eventLog.textContent = `Auto-Clicker purchased! Now have ${autoClickers} Auto-Clickers.`; } } ]; const upgrade = upgrades[index]; if (currency >= upgrade.cost) { currency -= upgrade.cost; upgrade.effect(); updateDisplay(); saveState(); alert(`${upgrade.name} purchased!`); } else { alert("Not enough currency!"); } updateShopButtons(); } function updateShopButtons() { const buttons = shopContent.querySelectorAll("button:not([onclick='closeShop()'])"); if (buttons.length === 0) return; buttons[0].disabled = currency < 50; buttons[1].disabled = currency < 100; buttons[2].disabled = currency < 200; buttons[3].disabled = currency < 300 * autoClickerLevel || autoClickers === 0; buttons[4].disabled = false; // default buttons[5].disabled = !ownedThemes.includes('neon') && currency < 500; buttons[6].disabled = !ownedThemes.includes('retro') && currency < 500; buttons[7].disabled = prestigePoints < 10; } function upgradeAutoClicker() { const upgradeCost = 300 * autoClickerLevel; if (currency >= upgradeCost) { currency -= upgradeCost; autoClickerLevel += 1; updateDisplay(); saveState(); eventLog.textContent = `Auto-Clicker upgraded to level ${autoClickerLevel}!`; } else { alert(`Not enough currency! You need $${upgradeCost}.`); } updateShopButtons(); } function applyTheme(theme) { const themes = { default: { background: "#111", clickBoxColor: "#fff" }, neon: { background: "#000", clickBoxColor: "#00ff88" }, retro: { background: "#222", clickBoxColor: "#ff00ff" } }; document.body.style.backgroundColor = themes[theme].background; clickBox.style.color = themes[theme].clickBoxColor; currentTheme = theme; saveState(); } function buyTheme(theme, cost) { if (ownedThemes.includes(theme)) { applyTheme(theme); alert(`Switched to ${theme} theme!`); } else if (currency >= cost) { currency -= cost; ownedThemes.push(theme); applyTheme(theme); updateDisplay(); saveState(); alert(`${theme} theme purchased and applied!`); } else { alert(`Not enough currency! You need $${cost}.`); } } const achievements = [ { id: 1, name: "Click Novice", condition: () => count >= 100, reward: () => currency += 20, unlocked: false }, { id: 2, name: "Upgrade Enthusiast", condition: () => clickPower >= 5, reward: () => currency += 50, unlocked: false } ]; function checkAchievements() { achievements.forEach(ach => { if (!ach.unlocked && ach.condition()) { ach.unlocked = true; ach.reward(); eventLog.textContent = `Achievement Unlocked: ${ach.name}!`; updateDisplay(); saveState(); } }); } function prestigeReset() { if (count < 1000) { alert("Need at least 1000 clicks to prestige!"); return; } const earnedPoints = Math.floor(count / 1000); prestigePoints += earnedPoints; count = 0; currency = 0; clickPower = 1; autoClickers = 0; autoClickerLevel = 1; updateDisplay(); saveState(); eventLog.textContent = `Prestiged! Gained ${earnedPoints} Prestige Points.`; } function spendPrestigePoints(amount, effect) { if (prestigePoints >= amount) { prestigePoints -= amount; effect(); updateDisplay(); saveState(); } else { alert(`Not enough Prestige Points! You need ${amount}.`); } } const leaderboard = [ { name: "Player1", score: 1000 }, { name: "Player2", score: 800 }, { name: "You", score: () => count } ]; // Background Music const musicTracks = [ "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Vibing%20Over%20Venus.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Space%20Jazz.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/On%20Hold%20for%20You.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Night%20in%20Venice.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Study%20And%20Relax.mp3" ]; let currentTrack = 0; function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; } function playBackgroundMusic() { backgroundMusic.src = musicTracks[currentTrack]; backgroundMusic.volume = 0.5; backgroundMusic.play().catch(error => { console.log("Error playing background music:", error); }); } function toggleMusic() { if (backgroundMusic.paused) { backgroundMusic.play().catch(error => console.log("Error:", error)); } else { backgroundMusic.pause(); } } backgroundMusic.addEventListener('ended', () => { currentTrack = (currentTrack + 1) % musicTracks.length; playBackgroundMusic(); }); shuffleArray(musicTracks); playBackgroundMusic(); // Listeners clickBox.addEventListener("click", handleClick); document.addEventListener("keydown", (e) => { if (e.code === "Space" || e.code === "Enter") { handleClick(); } }); // Apply theme on load applyTheme(currentTheme); // Load achievements const savedAchievements = JSON.parse(localStorage.getItem("achievements")) || []; achievements.forEach(ach => { const saved = savedAchievements.find(s => s.id === ach.id); if (saved) ach.unlocked = saved.unlocked; }); 
