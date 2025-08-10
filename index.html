@@ -1,130 +1,558 @@
-Click html, body { margin: 0; padding: 0; height: 100%; background-color: #111; color: #fff; font-family: 'Arial', sans-serif; overflow: hidden; }
-.counter {
-  position: absolute;
-  top: 10px;
-  left: 15px;
-  font-size: 1.2rem;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 6px 12px;
-  border-radius: 6px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Click</title>
+  <style>
+    :root {
+      --background-color: #111;
+      --text-color: #fff;
+      --click-box-color: #fff;
+    }
 
-.currency {
-  position: absolute;
-  top: 10px;
-  left: 150px;
-  font-size: 1.2rem;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 6px 12px;
-  border-radius: 6px;
-}
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+    }
 
-.menu-button {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: #333;
-  padding: 6px 12px;
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    .counter, .currency {
+      position: absolute;
+      top: 10px;
+      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
 
-.menu {
-  position: absolute;
-  top: 50px;
-  right: 15px;
-  background: #222;
-  padding: 10px;
-  border-radius: 8px;
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-}
+    .counter { left: 15px; }
+    .currency { left: 150px; }
 
-.menu button {
-  background: #444;
-  color: white;
-  border: none;
-  padding: 8px;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    .menu-button {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: #333;
+      padding: 6px 12px;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
 
-.click-box {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 8vw;
-  cursor: pointer;
-  text-align: center;
-  user-select: none;
-  transition: color 0.2s ease;
-}
+    .menu-button:hover { background: #555; }
 
-.thank-you {
-  color: #00e500;
-}
+    .menu {
+      position: absolute;
+      top: 50px;
+      right: 15px;
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
 
-.event-log {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.05);
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-}
+    .menu button {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
 
-.shop-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 10;
-}
+    .menu button:hover { background: #666; }
 
-.shop-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #222;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 300px;
-  text-align: center;
-}
+    .click-box {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 8vw;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      color: var(--click-box-color);
+      transition: color 0.2s ease;
+    }
 
-.shop-content button {
-  background: #444;
-  color: white;
-  border: none;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-}
+    .thank-you { color: #00e500; }
 
-.shop-content button:disabled {
-  background: #666;
-  cursor: not-allowed;
-}
-�
-Clicks: 0
-Currency: $0
-☰ 
-Reset Counter Save to Database Buy Upgrade Market Prestige Toggle Music 
-Click
-Waiting for events...
+    .event-log {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
 
-let count = parseInt(localStorage.getItem("clickCount")) || 0; let currency = parseInt(localStorage.getItem("currency")) || 0; let isThankYou = false; let clickPower = parseInt(localStorage.getItem("clickPower")) || 1; let autoClickers = parseInt(localStorage.getItem("autoClickers")) || 0; let autoClickerLevel = parseInt(localStorage.getItem("autoClickerLevel")) || 1; let eventShieldActive = false; let shieldTimeout = null; let prestigePoints = parseInt(localStorage.getItem("prestigePoints")) || 0; let prestigeMultiplier = parseFloat(localStorage.getItem("prestigeMultiplier")) || 1; let currentTheme = localStorage.getItem("theme") || "default"; let ownedThemes = JSON.parse(localStorage.getItem("ownedThemes")) || ["default"]; const counterEl = document.getElementById("clickCount"); const currencyEl = document.getElementById("currencyCount"); const clickBox = document.getElementById("clickBox"); const menu = document.getElementById("menu"); const eventLog = document.getElementById("eventLog"); const shopOverlay = document.getElementById("shopOverlay"); const shopContent = document.getElementById("shopContent"); const backgroundMusic = document.getElementById("backgroundMusic"); counterEl.textContent = count; currencyEl.textContent = currency; function handleClick() { if (!isThankYou) { count += clickPower * prestigeMultiplier; currency += Math.floor(clickPower * 0.5 * prestigeMultiplier); updateDisplay(); saveState(); checkAchievements(); isThankYou = true; clickBox.textContent = "Thank you"; clickBox.classList.add("thank-you"); setTimeout(() => { isThankYou = false; clickBox.textContent = "Click"; clickBox.classList.remove("thank-you"); }, 1000); } } function toggleMenu() { menu.style.display = menu.style.display === "flex" ? "none" : "flex"; } function resetClicks() { count = 0; currency = 0; clickPower = 1; autoClickers = 0; autoClickerLevel = 1; saveState(); updateDisplay(); } function saveToDatabase() { alert("Pretending to save to the cloud... (still fake 😎)"); } function buyUpgrade() { const upgradeCost = (clickPower + 1) * 10; if (currency >= upgradeCost) { currency -= upgradeCost; clickPower += 1; saveState(); updateDisplay(); alert(`Upgrade bought! Clicks now worth ${clickPower} each.`); } else { alert(`Not enough currency! You need $${upgradeCost}.`); } } function updateDisplay() { counterEl.textContent = count; currencyEl.textContent = currency; } function saveState() { localStorage.setItem("clickCount", count); localStorage.setItem("clickPower", clickPower); localStorage.setItem("currency", currency); localStorage.setItem("autoClickers", autoClickers); localStorage.setItem("autoClickerLevel", autoClickerLevel); localStorage.setItem("prestigePoints", prestigePoints); localStorage.setItem("prestigeMultiplier", prestigeMultiplier); localStorage.setItem("theme", currentTheme); localStorage.setItem("ownedThemes", JSON.stringify(ownedThemes)); localStorage.setItem("achievements", JSON.stringify(achievements.map(ach => ({id: ach.id, unlocked: ach.unlocked})))); } function triggerRandomEvent() { const events = [ { name: "Tax Takers", effect: () => { if (eventShieldActive) { eventLog.textContent = "Tax Takers blocked by Event Shield!"; return; } const stolen = Math.floor(count * 0.25); count = Math.max(0, count - stolen); eventLog.textContent = `💸 Tax Takers stole ${stolen} clicks!`; } }, { name: "Bonus Round!", effect: () => { const bonus = Math.floor(Math.random() * 15 + 10); count += bonus; currency += bonus; eventLog.textContent = `🎉 Bonus! You got ${bonus} extra clicks and cash!`; } }, { name: "System Glitch", effect: () => { if (eventShieldActive) { eventLog.textContent = "System Glitch blocked by Event Shield!"; return; } const lost = Math.floor(clickPower * 2); count -= lost; const oldPower = clickPower; clickPower = Math.max(1, clickPower - 1); eventLog.textContent = `⚠️ Glitch! Lost ${lost} clicks and click power reduced temporarily.`; setTimeout(() => { clickPower = oldPower; eventLog.textContent = "Glitch resolved."; updateDisplay(); saveState(); }, 60000); } } ]; const chosen = events[Math.floor(Math.random() * events.length)]; chosen.effect(); updateDisplay(); saveState(); setTimeout(() => { eventLog.textContent = "Waiting for events..."; }, 5000); } setInterval(triggerRandomEvent, 70000); function openMarket() { let shopHTML = ` <h3>Market</h3> <button onclick="buyUpgradeFromShop(0)">Click Boost - $50</button> <button onclick="buyUpgradeFromShop(1)">Event Shield - $100</button> <button onclick="buyUpgradeFromShop(2)">Auto-Clicker - $200</button> <button onclick="upgradeAutoClicker()">Upgrade Auto-Clicker - $${300 * autoClickerLevel}</button> <h3>Themes</h3> `; shopHTML += `<button onclick="applyTheme('default')">Apply Default Theme</button>`; const neonText = ownedThemes.includes('neon') ? "Apply Neon Theme" : "Neon Theme - $500"; shopHTML += `<button onclick="buyTheme('neon', 500)">${neonText}</button>`; const retroText = ownedThemes.includes('retro') ? "Apply Retro Theme" : "Retro Theme - $500"; shopHTML += `<button onclick="buyTheme('retro', 500)">${retroText}</button>`; shopHTML += ` <h3>Prestige Shop</h3> <button onclick="spendPrestigePoints(10, () => prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button> <h3>Leaderboard</h3> ${leaderboard.sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score)).map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`).join("")} <button onclick="closeShop()">Close</button> `; shopContent.innerHTML = shopHTML; updateShopButtons(); shopOverlay.style.display = "block"; } function closeShop() { shopOverlay.style.display = "none"; } function buyUpgradeFromShop(index) { const upgrades = [ { name: "Click Boost", cost: 50, effect: () => clickPower += 1 }, { name: "Event Shield", cost: 100, effect: () => { eventShieldActive = true; eventLog.textContent = "Event Shield activated for 2 minutes!"; clearTimeout(shieldTimeout); shieldTimeout = setTimeout(() => { eventShieldActive = false; eventLog.textContent = "Event Shield expired."; }, 120000); } }, { name: "Auto-Clicker", cost: 200, effect: () => { autoClickers += 1; if (autoClickers === 1) { setInterval(() => { const rate = autoClickers * autoClickerLevel * prestigeMultiplier; count += rate; currency += Math.floor(0.5 * rate); updateDisplay(); saveState(); }, 1000); } eventLog.textContent = `Auto-Clicker purchased! Now have ${autoClickers} Auto-Clickers.`; } } ]; const upgrade = upgrades[index]; if (currency >= upgrade.cost) { currency -= upgrade.cost; upgrade.effect(); updateDisplay(); saveState(); alert(`${upgrade.name} purchased!`); } else { alert("Not enough currency!"); } updateShopButtons(); } function updateShopButtons() { const buttons = shopContent.querySelectorAll("button:not([onclick='closeShop()'])"); if (buttons.length === 0) return; buttons[0].disabled = currency < 50; buttons[1].disabled = currency < 100; buttons[2].disabled = currency < 200; buttons[3].disabled = currency < 300 * autoClickerLevel || autoClickers === 0; buttons[4].disabled = false; // default buttons[5].disabled = !ownedThemes.includes('neon') && currency < 500; buttons[6].disabled = !ownedThemes.includes('retro') && currency < 500; buttons[7].disabled = prestigePoints < 10; } function upgradeAutoClicker() { const upgradeCost = 300 * autoClickerLevel; if (currency >= upgradeCost) { currency -= upgradeCost; autoClickerLevel += 1; updateDisplay(); saveState(); eventLog.textContent = `Auto-Clicker upgraded to level ${autoClickerLevel}!`; } else { alert(`Not enough currency! You need $${upgradeCost}.`); } updateShopButtons(); } function applyTheme(theme) { const themes = { default: { background: "#111", clickBoxColor: "#fff" }, neon: { background: "#000", clickBoxColor: "#00ff88" }, retro: { background: "#222", clickBoxColor: "#ff00ff" } }; document.body.style.backgroundColor = themes[theme].background; clickBox.style.color = themes[theme].clickBoxColor; currentTheme = theme; saveState(); } function buyTheme(theme, cost) { if (ownedThemes.includes(theme)) { applyTheme(theme); alert(`Switched to ${theme} theme!`); } else if (currency >= cost) { currency -= cost; ownedThemes.push(theme); applyTheme(theme); updateDisplay(); saveState(); alert(`${theme} theme purchased and applied!`); } else { alert(`Not enough currency! You need $${cost}.`); } } const achievements = [ { id: 1, name: "Click Novice", condition: () => count >= 100, reward: () => currency += 20, unlocked: false }, { id: 2, name: "Upgrade Enthusiast", condition: () => clickPower >= 5, reward: () => currency += 50, unlocked: false } ]; function checkAchievements() { achievements.forEach(ach => { if (!ach.unlocked && ach.condition()) { ach.unlocked = true; ach.reward(); eventLog.textContent = `Achievement Unlocked: ${ach.name}!`; updateDisplay(); saveState(); } }); } function prestigeReset() { if (count < 1000) { alert("Need at least 1000 clicks to prestige!"); return; } const earnedPoints = Math.floor(count / 1000); prestigePoints += earnedPoints; count = 0; currency = 0; clickPower = 1; autoClickers = 0; autoClickerLevel = 1; updateDisplay(); saveState(); eventLog.textContent = `Prestiged! Gained ${earnedPoints} Prestige Points.`; } function spendPrestigePoints(amount, effect) { if (prestigePoints >= amount) { prestigePoints -= amount; effect(); updateDisplay(); saveState(); } else { alert(`Not enough Prestige Points! You need ${amount}.`); } } const leaderboard = [ { name: "Player1", score: 1000 }, { name: "Player2", score: 800 }, { name: "You", score: () => count } ]; // Background Music const musicTracks = [ "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Vibing%20Over%20Venus.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Space%20Jazz.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/On%20Hold%20for%20You.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Night%20in%20Venice.mp3", "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Study%20And%20Relax.mp3" ]; let currentTrack = 0; function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; } function playBackgroundMusic() { backgroundMusic.src = musicTracks[currentTrack]; backgroundMusic.volume = 0.5; backgroundMusic.play().catch(error => { console.log("Error playing background music:", error); }); } function toggleMusic() { if (backgroundMusic.paused) { backgroundMusic.play().catch(error => console.log("Error:", error)); } else { backgroundMusic.pause(); } } backgroundMusic.addEventListener('ended', () => { currentTrack = (currentTrack + 1) % musicTracks.length; playBackgroundMusic(); }); shuffleArray(musicTracks); playBackgroundMusic(); // Listeners clickBox.addEventListener("click", handleClick); document.addEventListener("keydown", (e) => { if (e.code === "Space" || e.code === "Enter") { handleClick(); } }); // Apply theme on load applyTheme(currentTheme); // Load achievements const savedAchievements = JSON.parse(localStorage.getItem("achievements")) || []; achievements.forEach(ach => { const saved = savedAchievements.find(s => s.id === ach.id); if (saved) ach.unlocked = saved.unlocked; }); 
+    .shop-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10;
+    }
+
+    .shop-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+    }
+
+    .shop-content h3 {
+      margin: 10px 0;
+      font-size: 1.2rem;
+    }
+
+    .shop-content button {
+      background: #444;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+
+    .shop-content button:hover:not(:disabled) { background: #666; }
+
+    .shop-content button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="counter">Clicks: <span id="clickCount">0</span></div>
+  <div class="currency">Currency: $<span id="currencyCount">0</span></div>
+  <button class="menu-button" onclick="game.toggleMenu()">☰</button>
+  <div class="menu" id="menu">
+    <button onclick="game.resetClicks()">Reset Counter</button>
+    <button onclick="game.saveToDatabase()">Save to Database</button>
+    <button onclick="game.buyUpgrade()">Buy Upgrade</button>
+    <button onclick="game.openMarket()">Market</button>
+    <button onclick="game.prestigeReset()">Prestige</button>
+    <button onclick="game.toggleMusic()">Toggle Music</button>
+  </div>
+  <div class="click-box" id="clickBox">Click</div>
+  <div class="event-log" id="eventLog">Waiting for events...</div>
+  <div class="shop-overlay" id="shopOverlay">
+    <div class="shop-content" id="shopContent"></div>
+  </div>
+  <audio id="backgroundMusic" autoplay loop style="display: none;"></audio>
+
+  <script>
+    const game = {
+      state: {
+        count: parseInt(localStorage.getItem("clickCount")) || 0,
+        currency: parseInt(localStorage.getItem("currency")) || 0,
+        clickPower: parseInt(localStorage.getItem("clickPower")) || 1,
+        autoClickers: parseInt(localStorage.getItem("autoClickers")) || 0,
+        autoClickerLevel: parseInt(localStorage.getItem("autoClickerLevel")) || 1,
+        prestigePoints: parseInt(localStorage.getItem("prestigePoints")) || 0,
+        prestigeMultiplier: parseFloat(localStorage.getItem("prestigeMultiplier")) || 1,
+        currentTheme: localStorage.getItem("theme") || "default",
+        ownedThemes: JSON.parse(localStorage.getItem("ownedThemes")) || ["default"],
+        isThankYou: false,
+        eventShieldActive: false,
+        shieldTimeout: null
+      },
+
+      elements: {
+        counterEl: document.getElementById("clickCount"),
+        currencyEl: document.getElementById("currencyCount"),
+        clickBox: document.getElementById("clickBox"),
+        menu: document.getElementById("menu"),
+        eventLog: document.getElementById("eventLog"),
+        shopOverlay: document.getElementById("shopOverlay"),
+        shopContent: document.getElementById("shopContent"),
+        backgroundMusic: document.getElementById("backgroundMusic")
+      },
+
+      themes: {
+        default: { background: "#111", clickBoxColor: "#fff" },
+        neon: { background: "#000", clickBoxColor: "#00ff88" },
+        retro: { background: "#222", clickBoxColor: "#ff00ff" }
+      },
+
+      musicTracks: [
+        "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Vibing%20Over%20Venus.mp3",
+        "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Space%20Jazz.mp3",
+        "https://incompetech.com/music/royalty-free/mp3-royaltyfree/On%20Hold%20for%20You.mp3",
+        "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Night%20in%20Venice.mp3",
+        "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Study%20And%20Relax.mp3"
+      ],
+
+      achievements: [
+        { id: 1, name: "Click Novice", condition: () => game.state.count >= 100, reward: () => game.state.currency += 20, unlocked: false },
+        { id: 2, name: "Upgrade Enthusiast", condition: () => game.state.clickPower >= 5, reward: () => game.state.currency += 50, unlocked: false }
+      ],
+
+      leaderboard: [
+        { name: "Player1", score: 1000 },
+        { name: "Player2", score: 800 },
+        { name: "You", score: () => game.state.count }
+      ],
+
+      currentTrack: 0,
+
+      handleClick() {
+        if (!this.state.isThankYou) {
+          this.state.count += this.state.clickPower * this.state.prestigeMultiplier;
+          this.state.currency += Math.floor(this.state.clickPower * 0.5 * this.state.prestigeMultiplier);
+          this.updateDisplay();
+          this.saveState();
+          this.checkAchievements();
+
+          this.state.isThankYou = true;
+          this.elements.clickBox.textContent = "Thank you";
+          this.elements.clickBox.classList.add("thank-you");
+          setTimeout(() => {
+            this.state.isThankYou = false;
+            this.elements.clickBox.textContent = "Click";
+            this.elements.clickBox.classList.remove("thank-you");
+          }, 1000);
+        }
+      },
+
+      toggleMenu() {
+        this.elements.menu.style.display = this.elements.menu.style.display === "flex" ? "none" : "flex";
+      },
+
+      resetClicks() {
+        this.state.count = 0;
+        this.state.currency = 0;
+        this.state.clickPower = 1;
+        this.state.autoClickers = 0;
+        this.state.autoClickerLevel = 1;
+        this.saveState();
+        this.updateDisplay();
+      },
+
+      saveToDatabase() {
+        alert("Pretending to save to the cloud... (still fake 😎)");
+      },
+
+      buyUpgrade() {
+        const upgradeCost = (this.state.clickPower + 1) * 10;
+        if (this.state.currency >= upgradeCost) {
+          this.state.currency -= upgradeCost;
+          this.state.clickPower += 1;
+          this.saveState();
+          this.updateDisplay();
+          alert(`Upgrade bought! Clicks now worth ${this.state.clickPower} each.`);
+        } else {
+          alert(`Not enough currency! You need $${upgradeCost}.`);
+        }
+      },
+
+      updateDisplay() {
+        this.elements.counterEl.textContent = Math.floor(this.state.count);
+        this.elements.currencyEl.textContent = Math.floor(this.state.currency);
+      },
+
+      saveState() {
+        localStorage.setItem("clickCount", this.state.count);
+        localStorage.setItem("clickPower", this.state.clickPower);
+        localStorage.setItem("currency", this.state.currency);
+        localStorage.setItem("autoClickers", this.state.autoClickers);
+        localStorage.setItem("autoClickerLevel", this.state.autoClickerLevel);
+        localStorage.setItem("prestigePoints", this.state.prestigePoints);
+        localStorage.setItem("prestigeMultiplier", this.state.prestigeMultiplier);
+        localStorage.setItem("theme", this.state.currentTheme);
+        localStorage.setItem("ownedThemes", JSON.stringify(this.state.ownedThemes));
+        localStorage.setItem("achievements", JSON.stringify(this.achievements.map(ach => ({ id: ach.id, unlocked: ach.unlocked }))));
+      },
+
+      triggerRandomEvent() {
+        const events = [
+          {
+            name: "Tax Takers",
+            effect: () => {
+              if (this.state.eventShieldActive) {
+                this.elements.eventLog.textContent = "Tax Takers blocked by Event Shield!";
+                return;
+              }
+              const stolen = Math.floor(this.state.count * 0.25);
+              this.state.count = Math.max(0, this.state.count - stolen);
+              this.elements.eventLog.textContent = `💸 Tax Takers stole ${stolen} clicks!`;
+            }
+          },
+          {
+            name: "Bonus Round!",
+            effect: () => {
+              const bonus = Math.floor(Math.random() * 15 + 10);
+              this.state.count += bonus;
+              this.state.currency += bonus;
+              this.elements.eventLog.textContent = `🎉 Bonus! You got ${bonus} extra clicks and cash!`;
+            }
+          },
+          {
+            name: "System Glitch",
+            effect: () => {
+              if (this.state.eventShieldActive) {
+                this.elements.eventLog.textContent = "System Glitch blocked by Event Shield!";
+                return;
+              }
+              const lost = Math.floor(this.state.clickPower * 2);
+              this.state.count -= lost;
+              const oldPower = this.state.clickPower;
+              this.state.clickPower = Math.max(1, this.state.clickPower - 1);
+              this.elements.eventLog.textContent = `⚠️ Glitch! Lost ${lost} clicks and click power reduced temporarily.`;
+              setTimeout(() => {
+                this.state.clickPower = oldPower;
+                this.elements.eventLog.textContent = "Glitch resolved.";
+                this.updateDisplay();
+                this.saveState();
+              }, 60000);
+            }
+          }
+        ];
+
+        const chosen = events[Math.floor(Math.random() * events.length)];
+        chosen.effect();
+        this.updateDisplay();
+        this.saveState();
+        setTimeout(() => {
+          this.elements.eventLog.textContent = "Waiting for events...";
+        }, 5000);
+      },
+
+      openMarket() {
+        let shopHTML = `
+          <h3>Market</h3>
+          <button onclick="game.buyUpgradeFromShop(0)">Click Boost - $50</button>
+          <button onclick="game.buyUpgradeFromShop(1)">Event Shield - $100</button>
+          <button onclick="game.buyUpgradeFromShop(2)">Auto-Clicker - $200</button>
+          <button onclick="game.upgradeAutoClicker()">Upgrade Auto-Clicker - $${300 * this.state.autoClickerLevel}</button>
+          <h3>Themes</h3>
+          <button onclick="game.applyTheme('default')">Apply Default Theme</button>
+          <button onclick="game.buyTheme('neon', 500)">${this.state.ownedThemes.includes('neon') ? 'Apply Neon Theme' : 'Neon Theme - $500'}</button>
+          <button onclick="game.buyTheme('retro', 500)">${this.state.ownedThemes.includes('retro') ? 'Apply Retro Theme' : 'Retro Theme - $500'}</button>
+          <h3>Prestige Shop</h3>
+          <button onclick="game.spendPrestigePoints(10, () => game.state.prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button>
+          <h3>Leaderboard</h3>
+          ${this.leaderboard
+            .sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score))
+            .map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`)
+            .join("")}
+          <button onclick="game.closeShop()">Close</button>
+        `;
+        this.elements.shopContent.innerHTML = shopHTML;
+        this.updateShopButtons();
+        this.elements.shopOverlay.style.display = "block";
+      },
+
+      closeShop() {
+        this.elements.shopOverlay.style.display = "none";
+      },
+
+      buyUpgradeFromShop(index) {
+        const upgrades = [
+          { name: "Click Boost", cost: 50, effect: () => this.state.clickPower += 1 },
+          {
+            name: "Event Shield",
+            cost: 100,
+            effect: () => {
+              this.state.eventShieldActive = true;
+              this.elements.eventLog.textContent = "Event Shield activated for 2 minutes!";
+              clearTimeout(this.state.shieldTimeout);
+              this.state.shieldTimeout = setTimeout(() => {
+                this.state.eventShieldActive = false;
+                this.elements.eventLog.textContent = "Event Shield expired.";
+              }, 120000);
+            }
+          },
+          {
+            name: "Auto-Clicker",
+            cost: 200,
+            effect: () => {
+              this.state.autoClickers += 1;
+              if (this.state.autoClickers === 1) {
+                setInterval(() => {
+                  const rate = this.state.autoClickers * this.state.autoClickerLevel * this.state.prestigeMultiplier;
+                  this.state.count += rate;
+                  this.state.currency += Math.floor(0.5 * rate);
+                  this.updateDisplay();
+                  this.saveState();
+                }, 1000);
+              }
+              this.elements.eventLog.textContent = `Auto-Clicker purchased! Now have ${this.state.autoClickers} Auto-Clickers.`;
+            }
+          }
+        ];
+        const upgrade = upgrades[index];
+        if (this.state.currency >= upgrade.cost) {
+          this.state.currency -= upgrade.cost;
+          upgrade.effect();
+          this.updateDisplay();
+          this.saveState();
+          alert(`${upgrade.name} purchased!`);
+        } else {
+          alert("Not enough currency!");
+        }
+        this.updateShopButtons();
+      },
+
+      updateShopButtons() {
+        const buttons = this.elements.shopContent.querySelectorAll("button:not([onclick='game.closeShop()'])");
+        if (buttons.length === 0) return;
+        buttons[0].disabled = this.state.currency < 50;
+        buttons[1].disabled = this.state.currency < 100;
+        buttons[2].disabled = this.state.currency < 200;
+        buttons[3].disabled = this.state.currency < 300 * this.state.autoClickerLevel || this.state.autoClickers === 0;
+        buttons[4].disabled = false; // default theme
+        buttons[5].disabled = !this.state.ownedThemes.includes('neon') && this.state.currency < 500;
+        buttons[6].disabled = !this.state.ownedThemes.includes('retro') && this.state.currency < 500;
+        buttons[7].disabled = this.state.prestigePoints < 10;
+      },
+
+      upgradeAutoClicker() {
+        const upgradeCost = 300 * this.state.autoClickerLevel;
+        if (this.state.currency >= upgradeCost) {
+          this.state.currency -= upgradeCost;
+          this.state.autoClickerLevel += 1;
+          this.updateDisplay();
+          this.saveState();
+          this.elements.eventLog.textContent = `Auto-Clicker upgraded to level ${this.state.autoClickerLevel}!`;
+        } else {
+          alert(`Not enough currency! You need $${upgradeCost}.`);
+        }
+        this.updateShopButtons();
+      },
+
+      applyTheme(theme) {
+        document.documentElement.style.setProperty('--background-color', this.themes[theme].background);
+        document.documentElement.style.setProperty('--click-box-color', this.themes[theme].clickBoxColor);
+        this.state.currentTheme = theme;
+        this.saveState();
+      },
+
+      buyTheme(theme, cost) {
+        if (this.state.ownedThemes.includes(theme)) {
+          this.applyTheme(theme);
+          alert(`Switched to ${theme} theme!`);
+        } else if (this.state.currency >= cost) {
+          this.state.currency -= cost;
+          this.state.ownedThemes.push(theme);
+          this.applyTheme(theme);
+          this.updateDisplay();
+          this.saveState();
+          alert(`${theme} theme purchased and applied!`);
+        } else {
+          alert(`Not enough currency! You need $${cost}.`);
+        }
+      },
+
+      checkAchievements() {
+        this.achievements.forEach(ach => {
+          if (!ach.unlocked && ach.condition()) {
+            ach.unlocked = true;
+            ach.reward();
+            this.elements.eventLog.textContent = `Achievement Unlocked: ${ach.name}!`;
+            this.updateDisplay();
+            this.saveState();
+          }
+        });
+      },
+
+      prestigeReset() {
+        if (this.state.count < 1000) {
+          alert("Need at least 1000 clicks to prestige!");
+          return;
+        }
+        const earnedPoints = Math.floor(this.state.count / 1000);
+        this.state.prestigePoints += earnedPoints;
+        this.state.count = 0;
+        this.state.currency = 0;
+        this.state.clickPower = 1;
+        this.state.autoClickers = 0;
+        this.state.autoClickerLevel = 1;
+        this.updateDisplay();
+        this.saveState();
+        this.elements.eventLog.textContent = `Prestiged! Gained ${earnedPoints} Prestige Points.`;
+      },
+
+      spendPrestigePoints(amount, effect) {
+        if (this.state.prestigePoints >= amount) {
+          this.state.prestigePoints -= amount;
+          effect();
+          this.updateDisplay();
+          this.saveState();
+        } else {
+          alert(`Not enough Prestige Points! You need ${amount}.`);
+        }
+      },
+
+      shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      },
+
+      playBackgroundMusic() {
+        this.elements.backgroundMusic.src = this.musicTracks[this.currentTrack];
+        this.elements.backgroundMusic.volume = 0.5;
+        this.elements.backgroundMusic.play().catch(error => {
+          console.log("Error playing background music:", error);
+        });
+      },
+
+      toggleMusic() {
+        if (this.elements.backgroundMusic.paused) {
+          this.elements.backgroundMusic.play().catch(error => console.log("Error:", error));
+        } else {
+          this.elements.backgroundMusic.pause();
+        }
+      },
+
+      init() {
+        this.updateDisplay();
+        this.shuffleArray(this.musicTracks);
+        this.playBackgroundMusic();
+        this.applyTheme(this.state.currentTheme);
+
+        const savedAchievements = JSON.parse(localStorage.getItem("achievements")) || [];
+        this.achievements.forEach(ach => {
+          const saved = savedAchievements.find(s => s.id === ach.id);
+          if (saved) ach.unlocked = saved.unlocked;
+        });
+
+        this.elements.clickBox.addEventListener("click", () => this.handleClick());
+        document.addEventListener("keydown", (e) => {
+          if (e.code === "Space" || e.code === "Enter") {
+            this.handleClick();
+          }
+        });
+
+        this.elements.backgroundMusic.addEventListener('e
