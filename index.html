@@ -9,6 +9,9 @@
       --background-color: #111;
       --text-color: #fff;
       --click-box-color: #fff;
+      --accent-color: #00e500;
+      --card-bg: rgba(255, 255, 255, 0.1);
+      --card-border: rgba(255, 255, 255, 0.2);
     }
 
     html, body {
@@ -25,54 +28,86 @@
       position: absolute;
       top: 10px;
       font-size: 1.2rem;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 6px 12px;
-      border-radius: 6px;
+      background: var(--card-bg);
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
 
-    .counter { left: 15px; }
-    .currency { left: 150px; }
+    .counter:hover, .currency:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .counter { 
+      left: 15px; 
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    }
+    
+    .currency { 
+      left: 150px; 
+      background: linear-gradient(135deg, rgba(0, 229, 0, 0.15), rgba(0, 229, 0, 0.05));
+    }
 
     .menu-button {
       position: absolute;
       top: 10px;
       right: 15px;
       background: #333;
-      padding: 6px 12px;
+      padding: 8px 16px;
       border: none;
       color: #fff;
       font-size: 1rem;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .menu-button:hover { background: #555; }
+    .menu-button:hover { 
+      background: #555; 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
 
     .menu {
       position: absolute;
       top: 50px;
       right: 15px;
       background: #222;
-      padding: 10px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 10px;
       display: none;
       flex-direction: column;
       gap: 8px;
       z-index: 10;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .menu button {
       background: #444;
       color: white;
       border: none;
-      padding: 8px;
-      border-radius: 5px;
+      padding: 10px 12px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      text-align: left;
     }
 
-    .menu button:hover { background: #666; }
+    .menu button:hover { 
+      background: #666; 
+      transform: translateX(5px);
+    }
 
     .click-box {
       height: 100%;
@@ -84,20 +119,39 @@
       text-align: center;
       user-select: none;
       color: var(--click-box-color);
-      transition: color 0.2s ease;
+      transition: all 0.3s ease;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
-    .thank-you { color: #00e500; }
+    .click-box:hover {
+      transform: scale(1.05);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .thank-you { 
+      color: var(--accent-color);
+      text-shadow: 0 0 20px rgba(0, 229, 0, 0.7);
+    }
 
     .event-log {
       position: absolute;
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.05);
-      padding: 10px 20px;
-      border-radius: 6px;
+      background: var(--card-bg);
+      padding: 12px 24px;
+      border-radius: 8px;
       font-size: 0.9rem;
+      max-width: 80%;
+      text-align: center;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .event-log:hover {
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
 
     .shop-overlay {
@@ -107,8 +161,9 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 10;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 20;
+      animation: fadeIn 0.3s ease;
     }
 
     .shop-content {
@@ -117,49 +172,156 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: #222;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 24px;
+      border-radius: 12px;
       width: 80%;
-      max-width: 300px;
+      max-width: 320px;
       text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-height: 80vh;
+      overflow-y: auto;
     }
 
     .shop-content h3 {
-      margin: 10px 0;
-      font-size: 1.2rem;
+      margin: 15px 0 10px;
+      font-size: 1.3rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 8px;
     }
 
     .shop-content button {
       background: #444;
       color: white;
       border: none;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 5px;
+      padding: 12px;
+      margin: 6px 0;
+      border-radius: 6px;
       cursor: pointer;
       width: 100%;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
     }
 
-    .shop-content button:hover:not(:disabled) { background: #666; }
+    .shop-content button:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+    }
+
+    .shop-content button:hover:not(:disabled) { 
+      background: #666; 
+      transform: translateX(5px);
+    }
 
     .shop-content button:disabled {
-      background: #666;
+      background: #333;
       cursor: not-allowed;
       opacity: 0.6;
+    }
+
+    .shop-section {
+      margin-bottom: 20px;
+    }
+
+    .stats-panel {
+      position: absolute;
+      top: 60px;
+      left: 15px;
+      background: var(--card-bg);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .stats-panel p {
+      margin: 5px 0;
+    }
+
+    .stats-toggle {
+      position: absolute;
+      top: 10px;
+      left: 280px;
+      background: #333;
+      padding: 6px 10px;
+      border: none;
+      color: #fff;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .stats-toggle:hover {
+      background: #555;
+    }
+
+    /* Scrollbar styling for shop */
+    .shop-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .shop-content::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .shop-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+    }
+
+    .shop-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Pulse animation for currency change */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .currency-pulse {
+      animation: pulse 0.5s ease;
+    }
+
+    /* Glow effect for prestige button */
+    .prestige-glow {
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
     }
   </style>
 </head>
 <body>
   <div class="counter">Clicks: <span id="clickCount">0</span></div>
   <div class="currency">Currency: $<span id="currencyCount">0</span></div>
+  <button class="stats-toggle" onclick="game.toggleStats()">📊</button>
+  <div class="stats-panel" id="statsPanel">
+    <p>Click Power: <span id="statsClickPower">1</span></p>
+    <p>Auto-Clickers: <span id="statsAutoClickers">0</span></p>
+    <p>Auto-Clicker Level: <span id="statsAutoClickerLevel">1</span></p>
+    <p>Prestige Points: <span id="statsPrestigePoints">0</span></p>
+    <p>Multiplier: <span id="statsMultiplier">1</span>x</p>
+  </div>
   <button class="menu-button" onclick="game.toggleMenu()">☰</button>
   <div class="menu" id="menu">
     <button onclick="game.resetClicks()">Reset Counter</button>
     <button onclick="game.saveToDatabase()">Save to Database</button>
     <button onclick="game.buyUpgrade()">Buy Upgrade</button>
     <button onclick="game.openMarket()">Market</button>
-    <button onclick="game.prestigeReset()">Prestige</button>
+    <button id="prestigeButton" onclick="game.prestigeReset()">Prestige</button>
     <button onclick="game.toggleMusic()">Toggle Music</button>
   </div>
   <div class="click-box" id="clickBox">Click</div>
@@ -194,7 +356,14 @@
         eventLog: document.getElementById("eventLog"),
         shopOverlay: document.getElementById("shopOverlay"),
         shopContent: document.getElementById("shopContent"),
-        backgroundMusic: document.getElementById("backgroundMusic")
+        backgroundMusic: document.getElementById("backgroundMusic"),
+        statsPanel: document.getElementById("statsPanel"),
+        statsClickPower: document.getElementById("statsClickPower"),
+        statsAutoClickers: document.getElementById("statsAutoClickers"),
+        statsAutoClickerLevel: document.getElementById("statsAutoClickerLevel"),
+        statsPrestigePoints: document.getElementById("statsPrestigePoints"),
+        statsMultiplier: document.getElementById("statsMultiplier"),
+        prestigeButton: document.getElementById("prestigeButton")
       },
 
       themes: {
@@ -232,6 +401,12 @@
           this.saveState();
           this.checkAchievements();
 
+          // Visual feedback for currency gain
+          this.elements.currencyEl.classList.add('currency-pulse');
+          setTimeout(() => {
+            this.elements.currencyEl.classList.remove('currency-pulse');
+          }, 500);
+
           this.state.isThankYou = true;
           this.elements.clickBox.textContent = "Thank you";
           this.elements.clickBox.classList.add("thank-you");
@@ -247,14 +422,37 @@
         this.elements.menu.style.display = this.elements.menu.style.display === "flex" ? "none" : "flex";
       },
 
+      toggleStats() {
+        this.elements.statsPanel.style.display = this.elements.statsPanel.style.display === "block" ? "none" : "block";
+        this.updateStats();
+      },
+
+      updateStats() {
+        this.elements.statsClickPower.textContent = this.state.clickPower;
+        this.elements.statsAutoClickers.textContent = this.state.autoClickers;
+        this.elements.statsAutoClickerLevel.textContent = this.state.autoClickerLevel;
+        this.elements.statsPrestigePoints.textContent = this.state.prestigePoints;
+        this.elements.statsMultiplier.textContent = this.state.prestigeMultiplier.toFixed(1);
+        
+        // Add glow to prestige button if available
+        if (this.state.count >= 1000) {
+          this.elements.prestigeButton.classList.add('prestige-glow');
+        } else {
+          this.elements.prestigeButton.classList.remove('prestige-glow');
+        }
+      },
+
       resetClicks() {
-        this.state.count = 0;
-        this.state.currency = 0;
-        this.state.clickPower = 1;
-        this.state.autoClickers = 0;
-        this.state.autoClickerLevel = 1;
-        this.saveState();
-        this.updateDisplay();
+        if (confirm("Are you sure you want to reset all progress?")) {
+          this.state.count = 0;
+          this.state.currency = 0;
+          this.state.clickPower = 1;
+          this.state.autoClickers = 0;
+          this.state.autoClickerLevel = 1;
+          this.saveState();
+          this.updateDisplay();
+          this.updateStats();
+        }
       },
 
       saveToDatabase() {
@@ -268,6 +466,7 @@
           this.state.clickPower += 1;
           this.saveState();
           this.updateDisplay();
+          this.updateStats();
           alert(`Upgrade bought! Clicks now worth ${this.state.clickPower} each.`);
         } else {
           alert(`Not enough currency! You need $${upgradeCost}.`);
@@ -332,6 +531,7 @@
                 this.elements.eventLog.textContent = "Glitch resolved.";
                 this.updateDisplay();
                 this.saveState();
+                this.updateStats();
               }, 60000);
             }
           }
@@ -341,6 +541,7 @@
         chosen.effect();
         this.updateDisplay();
         this.saveState();
+        this.updateStats();
         setTimeout(() => {
           this.elements.eventLog.textContent = "Waiting for events...";
         }, 5000);
@@ -349,21 +550,29 @@
       openMarket() {
         let shopHTML = `
           <h3>Market</h3>
-          <button onclick="game.buyUpgradeFromShop(0)">Click Boost - $50</button>
-          <button onclick="game.buyUpgradeFromShop(1)">Event Shield - $100</button>
-          <button onclick="game.buyUpgradeFromShop(2)">Auto-Clicker - $200</button>
-          <button onclick="game.upgradeAutoClicker()">Upgrade Auto-Clicker - $${300 * this.state.autoClickerLevel}</button>
+          <div class="shop-section">
+            <button onclick="game.buyUpgradeFromShop(0)">Click Boost - $50</button>
+            <button onclick="game.buyUpgradeFromShop(1)">Event Shield - $100</button>
+            <button onclick="game.buyUpgradeFromShop(2)">Auto-Clicker - $200</button>
+            <button onclick="game.upgradeAutoClicker()">Upgrade Auto-Clicker - $${300 * this.state.autoClickerLevel}</button>
+          </div>
           <h3>Themes</h3>
-          <button onclick="game.applyTheme('default')">Apply Default Theme</button>
-          <button onclick="game.buyTheme('neon', 500)">${this.state.ownedThemes.includes('neon') ? 'Apply Neon Theme' : 'Neon Theme - $500'}</button>
-          <button onclick="game.buyTheme('retro', 500)">${this.state.ownedThemes.includes('retro') ? 'Apply Retro Theme' : 'Retro Theme - $500'}</button>
+          <div class="shop-section">
+            <button onclick="game.applyTheme('default')">Apply Default Theme</button>
+            <button onclick="game.buyTheme('neon', 500)">${this.state.ownedThemes.includes('neon') ? 'Apply Neon Theme' : 'Neon Theme - $500'}</button>
+            <button onclick="game.buyTheme('retro', 500)">${this.state.ownedThemes.includes('retro') ? 'Apply Retro Theme' : 'Retro Theme - $500'}</button>
+          </div>
           <h3>Prestige Shop</h3>
-          <button onclick="game.spendPrestigePoints(10, () => game.state.prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button>
+          <div class="shop-section">
+            <button onclick="game.spendPrestigePoints(10, () => game.state.prestigeMultiplier += 0.1)">+10% Multiplier - 10 PP</button>
+          </div>
           <h3>Leaderboard</h3>
-          ${this.leaderboard
-            .sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score))
-            .map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`)
-            .join("")}
+          <div class="shop-section">
+            ${this.leaderboard
+              .sort((a, b) => (typeof b.score === "function" ? b.score() : b.score) - (typeof a.score === "function" ? a.score() : a.score))
+              .map((p, i) => `<p>${i + 1}. ${p.name}: ${typeof p.score === "function" ? p.score() : p.score}</p>`)
+              .join("")}
+          </div>
           <button onclick="game.closeShop()">Close</button>
         `;
         this.elements.shopContent.innerHTML = shopHTML;
@@ -385,174 +594,4 @@
               this.state.eventShieldActive = true;
               this.elements.eventLog.textContent = "Event Shield activated for 2 minutes!";
               clearTimeout(this.state.shieldTimeout);
-              this.state.shieldTimeout = setTimeout(() => {
-                this.state.eventShieldActive = false;
-                this.elements.eventLog.textContent = "Event Shield expired.";
-              }, 120000);
-            }
-          },
-          {
-            name: "Auto-Clicker",
-            cost: 200,
-            effect: () => {
-              this.state.autoClickers += 1;
-              if (this.state.autoClickers === 1) {
-                setInterval(() => {
-                  const rate = this.state.autoClickers * this.state.autoClickerLevel * this.state.prestigeMultiplier;
-                  this.state.count += rate;
-                  this.state.currency += Math.floor(0.5 * rate);
-                  this.updateDisplay();
-                  this.saveState();
-                }, 1000);
-              }
-              this.elements.eventLog.textContent = `Auto-Clicker purchased! Now have ${this.state.autoClickers} Auto-Clickers.`;
-            }
-          }
-        ];
-        const upgrade = upgrades[index];
-        if (this.state.currency >= upgrade.cost) {
-          this.state.currency -= upgrade.cost;
-          upgrade.effect();
-          this.updateDisplay();
-          this.saveState();
-          alert(`${upgrade.name} purchased!`);
-        } else {
-          alert("Not enough currency!");
-        }
-        this.updateShopButtons();
-      },
-
-      updateShopButtons() {
-        const buttons = this.elements.shopContent.querySelectorAll("button:not([onclick='game.closeShop()'])");
-        if (buttons.length === 0) return;
-        buttons[0].disabled = this.state.currency < 50;
-        buttons[1].disabled = this.state.currency < 100;
-        buttons[2].disabled = this.state.currency < 200;
-        buttons[3].disabled = this.state.currency < 300 * this.state.autoClickerLevel || this.state.autoClickers === 0;
-        buttons[4].disabled = false; // default theme
-        buttons[5].disabled = !this.state.ownedThemes.includes('neon') && this.state.currency < 500;
-        buttons[6].disabled = !this.state.ownedThemes.includes('retro') && this.state.currency < 500;
-        buttons[7].disabled = this.state.prestigePoints < 10;
-      },
-
-      upgradeAutoClicker() {
-        const upgradeCost = 300 * this.state.autoClickerLevel;
-        if (this.state.currency >= upgradeCost) {
-          this.state.currency -= upgradeCost;
-          this.state.autoClickerLevel += 1;
-          this.updateDisplay();
-          this.saveState();
-          this.elements.eventLog.textContent = `Auto-Clicker upgraded to level ${this.state.autoClickerLevel}!`;
-        } else {
-          alert(`Not enough currency! You need $${upgradeCost}.`);
-        }
-        this.updateShopButtons();
-      },
-
-      applyTheme(theme) {
-        document.documentElement.style.setProperty('--background-color', this.themes[theme].background);
-        document.documentElement.style.setProperty('--click-box-color', this.themes[theme].clickBoxColor);
-        this.state.currentTheme = theme;
-        this.saveState();
-      },
-
-      buyTheme(theme, cost) {
-        if (this.state.ownedThemes.includes(theme)) {
-          this.applyTheme(theme);
-          alert(`Switched to ${theme} theme!`);
-        } else if (this.state.currency >= cost) {
-          this.state.currency -= cost;
-          this.state.ownedThemes.push(theme);
-          this.applyTheme(theme);
-          this.updateDisplay();
-          this.saveState();
-          alert(`${theme} theme purchased and applied!`);
-        } else {
-          alert(`Not enough currency! You need $${cost}.`);
-        }
-      },
-
-      checkAchievements() {
-        this.achievements.forEach(ach => {
-          if (!ach.unlocked && ach.condition()) {
-            ach.unlocked = true;
-            ach.reward();
-            this.elements.eventLog.textContent = `Achievement Unlocked: ${ach.name}!`;
-            this.updateDisplay();
-            this.saveState();
-          }
-        });
-      },
-
-      prestigeReset() {
-        if (this.state.count < 1000) {
-          alert("Need at least 1000 clicks to prestige!");
-          return;
-        }
-        const earnedPoints = Math.floor(this.state.count / 1000);
-        this.state.prestigePoints += earnedPoints;
-        this.state.count = 0;
-        this.state.currency = 0;
-        this.state.clickPower = 1;
-        this.state.autoClickers = 0;
-        this.state.autoClickerLevel = 1;
-        this.updateDisplay();
-        this.saveState();
-        this.elements.eventLog.textContent = `Prestiged! Gained ${earnedPoints} Prestige Points.`;
-      },
-
-      spendPrestigePoints(amount, effect) {
-        if (this.state.prestigePoints >= amount) {
-          this.state.prestigePoints -= amount;
-          effect();
-          this.updateDisplay();
-          this.saveState();
-        } else {
-          alert(`Not enough Prestige Points! You need ${amount}.`);
-        }
-      },
-
-      shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-      },
-
-      playBackgroundMusic() {
-        this.elements.backgroundMusic.src = this.musicTracks[this.currentTrack];
-        this.elements.backgroundMusic.volume = 0.5;
-        this.elements.backgroundMusic.play().catch(error => {
-          console.log("Error playing background music:", error);
-        });
-      },
-
-      toggleMusic() {
-        if (this.elements.backgroundMusic.paused) {
-          this.elements.backgroundMusic.play().catch(error => console.log("Error:", error));
-        } else {
-          this.elements.backgroundMusic.pause();
-        }
-      },
-
-      init() {
-        this.updateDisplay();
-        this.shuffleArray(this.musicTracks);
-        this.playBackgroundMusic();
-        this.applyTheme(this.state.currentTheme);
-
-        const savedAchievements = JSON.parse(localStorage.getItem("achievements")) || [];
-        this.achievements.forEach(ach => {
-          const saved = savedAchievements.find(s => s.id === ach.id);
-          if (saved) ach.unlocked = saved.unlocked;
-        });
-
-        this.elements.clickBox.addEventListener("click", () => this.handleClick());
-        document.addEventListener("keydown", (e) => {
-          if (e.code === "Space" || e.code === "Enter") {
-            this.handleClick();
-          }
-        });
-
-        this.elements.backgroundMusic.addEventListener('e
+              this.state.shiel
